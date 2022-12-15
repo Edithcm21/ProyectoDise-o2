@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include<math.h>
-
+#include <math.h>
+#define N 300
 #define max_nombre 100
 #define max_canciones 20
 // Definimos la estructura para las canciones
 typedef struct Cancion {
-  char nombre_cancion[200];
-  char Categoria[30];
+  char nombre_cancion[100];
+  char artista[40];
+  int id_categoria;
   int Puntuacion;
   int duracion;
   int num_reproducciones;
@@ -18,163 +19,30 @@ void Imprimir_canciones(int pagina,int paginas, Cancion *arreglodin, int tamano)
 void ingresarcanciones(Cancion cancion);
 float leerarchivo(Cancion cancion);
 Cancion * llenararray(Cancion cancion, int j, Cancion *arreglodin);
+void quickSort(Cancion *v, int primero, int ultimo);
+void Imprimir_Categoria(Cancion *array,int tam);
+void mergeSort(int left, int right, Cancion *a);
+void merge(int left, int centro, int right, Cancion *a);
+void top5(Cancion *a,int tam);
+void buscar_Frase(Cancion *arreglodin, int tam);
+
 
 // Variable para llevar el control de la canción actual
 int cancion_Actual = 0;
 
-// Creamos una lista de canciones
-Cancion lista[] = {{"Cancion 1", "Categoria 1", 5, 200},
-                   {"Cancion 2", "Categoria 1", 4, 150},
-                   {"Cancion 3", "Categoria 2", 3, 100},
-                   {"Cancion 4", "Categoria 2", 4, 120},
-                   {"Cancion 5", "Categoria 3", 5, 180},
-                   {"Cancion 6", "Categoria 3", 4, 130},
-                   {"Cancion 7", "Categoria 3", 3, 90},
-                   {"Cancion 8", "Categoria 1", 4, 140},
-                   {"Cancion 9", "Categoria 2", 5, 210},
-                   {"Cancion 10", "Categoria 2", 4, 160},
-                   {"Cancion 11", "Categoria 1", 3, 110},
-                   {"Cancion 12", "Categoria 3", 4, 120},
-                   {"Cancion 13", "Categoria 1", 5, 190},
-                   {"Cancion 14", "Categoria 2", 4, 150},
-                   {"Cancion 15", "Categoria 2", 3, 100},
-                   {"Cancion 16", "Categoria 3", 4, 130},
-                   {"Cancion 17", "Categoria 1", 5, 200},
-                   {"Cancion 18", "Categoria 2", 4, 140},
-                   {"Cancion 19", "Categoria 3", 3, 110},
-                   {"Cancion 20", "Categoria 1", 4, 160}};
-
-//Función para buscar una cancion a partir de una frase
-void buscar_Frase(Cancion *arreglodin) {
-	int i,j;
-	char search [max_nombre];
-	printf("Ingresa una frase para buscar en las canciones: ");
-    //scanf("%[^\n]", search);
-    scanf("%s", search);
-    printf("Las canciones que coinciden con %s son : \n", search);
-    for ( i = 0;i < max_canciones; i++) {
-      if (strstr(arreglodin[i].nombre_cancion, search) != NULL) {
-        printf("- %s\n", arreglodin[i]);
-      }
-    }
-    printf("\n");
-  }
 
 
-// Función para imprimir la lista de canciones de 10 en 10
-// Función para imprimir la lista de canciones de 10 en 10
-void Imprimir_canciones(int pagina,int paginas, Cancion *arreglodin, int tamano) {
-  int inicio_Indice = (pagina - 1) * 10;
-  int final_Indice = inicio_Indice + 10;
-  if(final_Indice>=tamano)
-  	final_Indice=tamano;
 
-int i;
 
-printf (" ************************************************************************\n");
-  
-  for ( i = inicio_Indice; i < final_Indice; i++) {
 
-    printf("\t valor del i= %d%  ,%s   nombre del artista \n",i,arreglodin[i].nombre_cancion);
-   
-    //printf("nombre del artista \n");
-  }
-   printf("\n \t \tPágina %d / %d:\n", pagina,paginas);
-   printf (" ************************************************************************\n");
-  
-
-  printf("\n");
-}
-
-void agrupar_Categoria() {
-	int i,j;
-  // Creamos un diccionario para almacenar las canciones agrupadas por categoría
-  char *categoria[] = {"Categoria 1", "Categoria 2", "Categoria 3"};
-  for (i = 0; i < 3; i++) {
-    printf("Categoria %d:\n", i + 1);
-    for ( j = 0; j < max_canciones; j++) {
-      if (strcmp(lista[j].Categoria, categoria[i]) == 0) {
-        printf("%s\n", lista[j].nombre_cancion);
-      }
-    }
-    printf("\n");
-  }
-}
-
-// Función para obtener las 5 canciones más reproducidas
-void top_Canciones() {
-	int i,j;
-  // Ordenamos las canciones por cantidad de reproducciones de mayor a menor
-  for (i = 0; i < 5; i++) {
-    for ( j = i + 1; j < max_canciones; j++) {
-      if (lista[i].Puntuacion < lista[j].Puntuacion) {
-        Cancion temp = lista[i];
-        lista[i] = lista[j];
-        lista[j] = temp;
-      }
-    }
-  }
-
-  // Imprimimos las 5 canciones más reproducidas
-  printf("Top 5 canciones mas reproducidas:\n");
-  for ( i = 0; i < 5; i++) {
-    printf("%s\n", lista[i].nombre_cancion);
-  }
-  printf("\n");
-}
 // Función para obtener las canciones ordenadas por puntuación (1-5) de mayor a
 // menor
 void orden_puntuacion() {
-	int i,j;
-  // Ordenamos las canciones por puntuación de mayor a menor
-  for ( i = 0; i < 5; i++) {
-    for (j = i + 1; j < 5; j++) {
-      if (lista[i].Puntuacion < lista[j].Puntuacion) {
-        Cancion temp = lista[i];
-        lista[i] = lista[j];
-        lista[j] = temp;
-      }
-    }
-  }
+	
+  
 
-  // Imprimimos las canciones ordenadas por puntuación de mayor a menor
-  printf("Canciones ordenadas por puntuacion (1-5) de mayor a menor:\n");
-  for ( i = 0; i < 5; i++) {
-    printf("%s\n", lista[i].nombre_cancion);
-  }
-  printf("\n");
 }
 
-
-// Función para ir a la canción siguiente
-void siguiente_Cancion() {
-  // Verificamos que no se encuentre en la última canción
-  if (cancion_Actual == 4) {
-    printf("Ya se encuentra en la última canción.\n\n");
-    return;
-  }
-
-  // Incrementamos el índice de la canción en 1
-  cancion_Actual++;
-
-  // Imprimimos el título de la canción
-  printf("Reproduciendo: %s\n\n", lista[cancion_Actual].nombre_cancion);
-}
-
-// Función para ir a la canción anterior
-void cancion_Anterior() {
-  // Verificamos que no se encuentre en la primera canción
-  if (cancion_Actual == 0) {
-    printf("Ya se encuentra en la primera canción.\n\n");
-    return;
-  }
-
-  // Decrementamos el índice de la canción en 1
-  cancion_Actual--;
-
-  // Imprimimos el título de la canción
-  printf("Reproduciendo: %s\n\n", lista[cancion_Actual].nombre_cancion);
-}
 
 int main(void) {
   int opcion1, opcion2, opc, i,j,y,numeropaginas;
@@ -182,9 +50,9 @@ int main(void) {
   float num_canciones;
 
 
-  Cancion *arreglodin;
+  Cancion *arreglodin,*arregloCategorias,*arregloMasescuchadas,*arreglobusqueda;
   Cancion cancion;
-  
+  /*
   ingresarcanciones(cancion);
   ingresarcanciones(cancion);
   ingresarcanciones(cancion);
@@ -197,26 +65,47 @@ int main(void) {
   ingresarcanciones(cancion);
   ingresarcanciones(cancion);
   ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+  ingresarcanciones(cancion);
+*/
+  //mediante leer archivo obtengo cuantas canciones tenemos guardadas
   num_canciones=leerarchivo(cancion);
-  
+
+  //si nos devuelve 0 el archivo esta vacio 
   
 if(num_canciones<=0)
 		{
 			printf("Aun no existen canciones");
 		}
 		else{
+      // ceil devuelve el redondeo por arriba 
+      //si num_canciones=12 x=2= numero de paginas
 			x=ceil(num_canciones/10);
 			numeropaginas=x;  // declaramos cuantas paginas tenemos en base al numero de canciones registradas
 		
-			arreglodin=(Cancion*)malloc(num_canciones*sizeof(Cancion));
-		if(!arreglodin)				
-			{
-				printf("No se pudo alojar la memoria \n");
-				return 0;	
-			}
-
-
-			llenararray(cancion,num_canciones,arreglodin);
+			
 		}
 		
 
@@ -243,23 +132,28 @@ if(num_canciones<=0)
         printf("[3] Top 5 canciones mas reproducidas\n");
         printf("[4] ordenadas por puntaje 1-5\n");
         printf("[5] Lista de numero de canciones que se pueden escuchar en un tiempo t\n");
-        printf("[6] Siguiente cancion\n");
-        printf("[7] Cancion anterior\n");
-        printf("[8] Cancion actual\n");
-        printf("[9] regresar al menú principal\n");
+        printf("[6] regresar al menú principal\n");
         printf("\n Selecciona una opcion   ");
         scanf("%d", &opcion2);
 
         switch (opcion2) {
         case 1:
-          
         	do{
+            arreglodin=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+		        if(!arreglodin)				
+			      {
+				      printf("No se pudo alojar la memoria \n");
+				      return 0;	
+			      }
+
+
+			llenararray(cancion,num_canciones,arreglodin);
         		Imprimir_canciones(pagina,numeropaginas,arreglodin,num_canciones);
           printf("\t\t Opciones \n");
           if(pagina==1 && pagina!=numeropaginas){
           	printf("\t\t [ 2 ] pagina siguiente\n");
           }
-          if(pagina==numeropaginas)
+          if(pagina==numeropaginas && pagina!=1)
           {
           	printf("\t\t [ 1 ] pagina pagina anterior\n");
 
@@ -287,7 +181,9 @@ if(num_canciones<=0)
           }
 
           if(opc!=1 && opc!=2){
-          	printf("Volviendo a el menu de listar canciones ...");
+          	printf("Volviendo a el menu principal...");
+          	opcion2=6;
+            free(arreglodin);
           	break;
 
           }
@@ -299,44 +195,74 @@ if(num_canciones<=0)
           
           break;
         case 2:
+
+        	arregloCategorias=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+			if(!arregloCategorias)				
+			{
+				printf("No se pudo alojar la memoria \n");
+				return 0;	
+			}
+			llenararray(cancion,num_canciones,arregloCategorias);
           // Agrupamos las canciones por categoría
-          agrupar_Categoria();
+          //Con mergeSort ordenamos por categorias 
+          mergeSort(0, num_canciones-1, arregloCategorias);
+        	Imprimir_Categoria(arregloCategorias,num_canciones);
+        	printf(" \n \n  seleccione ""1"" para ir al menu principal ");
+        	scanf("%i",&opcion2);
+        	opcion2=6;
+        	free(arregloCategorias);
           break;
         case 3:
-          // metodo `para listar las 5 canciones mas reproducidas
-          top_Canciones();
+          arregloMasescuchadas=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+			    if(!arregloMasescuchadas)				
+			  {
+				printf("No se pudo alojar la memoria \n");
+				return 0;	
+			  }
+          //Hace el llenado del arreglo
+			llenararray(cancion,num_canciones,arregloMasescuchadas);
+      //Se ordenan los datos con QuickSort
+          quickSort(arregloMasescuchadas,0,num_canciones-1);
+      // metodo `para listar las 5 canciones mas reproducidas
+      top5(arregloMasescuchadas,num_canciones);
+        	printf(" \n \n  seleccione ""1"" para ir al menu principal ");
+        	scanf("%i",&opcion2);
+          opcion2=6;
+          free(arregloMasescuchadas);
+          
           break;
         case 4:
           // obtenemos las canciones ordenadas por puntiacion de mayor a menor
-          orden_puntuacion();
+          //orden_puntuacion();
           break;
         case 5:
           // lista de canciones que se pueden escuchar en un tiempo t
+
           break;
-        case 6:
-          // Llamamos a la función para ir a la canción siguiente
-          siguiente_Cancion();
-          break;
-        case 7:
-          // Llamamos a la función para ir a la canción anterior
-          cancion_Anterior();
-          break;
-        case 8:
-          // Reproducimos la primera canción
-          printf("Reproduciendo: %s\n\n", lista[cancion_Actual].nombre_cancion);
         default:
           
-            opcion2 = 9;
+            opcion2 = 6;
           
         }
 
-      } while (opcion2 != 9);
+      } while (opcion2 != 6);
       break;
     }
 
     case 2:
       //Realizar busqueda a partir de una frase
-      buscar_Frase(arreglodin);
+      
+            arreglobusqueda=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+		        if(!arreglobusqueda)				
+			      {
+				      printf("No se pudo alojar la memoria \n");
+				      return 0;	
+			      }
+      llenararray(cancion, num_canciones, arreglobusqueda);
+      buscar_Frase(arreglobusqueda, num_canciones);
+        	printf(" \n \n  seleccione ""1"" para ir al menu principal ");
+        	scanf("%i",&opcion1); 
+      free(arreglobusqueda);
       break;
 
     case 3:
@@ -346,7 +272,6 @@ if(num_canciones<=0)
       opcion1 = 3;
     }
   } while (opcion1 != 3);
-
 
   return 0;
 }
@@ -364,9 +289,11 @@ void ingresarcanciones(Cancion cancion)
 
 	fflush(stdin);
 		printf("Ingrese el nombre de la cancion: ");
-		scanf(" %[^\n]", cancion.nombre_cancion);fflush(stdin);//fgets(cancion.nombre_cancion, 100, stdin);fflush(stdin);
-		printf("ingresa la categoria : ");
-		scanf(" %[^\n]", cancion.Categoria);fflush(stdin);//fgets(cancion.Categoria, 50, stdin);fflush(stdin);
+		scanf(" %[^\n]", cancion.nombre_cancion);fflush(stdin);
+		printf("Ingrese el nombre del artista: ");
+		scanf(" %[^\n]", cancion.artista);fflush(stdin);
+		printf("ingresa el id de la  categoria : (1) Pop, (2) Rock, (3) salsa, (4) Reggaeton ");
+		scanf("%i",&cancion.id_categoria);fflush(stdin);
 		printf("ingresa la Puntuacion:  ");
 		scanf(" %i",&cancion.Puntuacion);fflush(stdin);
 		printf( "ingresa la duracion :  ");
@@ -384,6 +311,9 @@ void ingresarcanciones(Cancion cancion)
 
 }
 
+//Metodo que lee el archivo y obtiene el numero total de registros 
+//que han sido almacenados en el archivo
+//ya que obtenemos la cantidad de registros podemos llenar el arreglo
 float  leerarchivo(Cancion cancion)
 {
 	FILE *file2;
@@ -403,7 +333,6 @@ float  leerarchivo(Cancion cancion)
 			
 		}
 		fclose(file2);
-		printf("Termino de leer el archivo %f",i);
 		return i;
 	
 }
@@ -434,3 +363,165 @@ Cancion * llenararray(Cancion cancion,int j, Cancion *arreglodin){
 		return arreglodin;
 
 }
+//Este metodo lo utilizo para ordenar el arreglo por el numero de reproducciones para despues imprimir de 
+//Manera mas sencilla
+
+void quickSort(Cancion *v, int primero, int ultimo){
+  int i, j, central;
+  Cancion pivote;
+  central = (primero + ultimo)/2;
+  pivote = v[central];
+  i=primero;
+  j=ultimo;
+  
+  do{
+    while(v[i].num_reproducciones<pivote.num_reproducciones)i++;
+    while(v[j].num_reproducciones>pivote.num_reproducciones)j--;
+    if(i<=j){
+      Cancion temp = v[i];
+      v[i] = v[j];
+      v[j] = temp;
+      i++;
+      j--;
+    }    
+  }while(i<=j);
+  
+  if(primero<j)
+    quickSort(v, primero, j);
+  if(i<ultimo)
+    quickSort(v, i, ultimo);
+  
+}
+
+//Este metodo tiene como parametro el arreglo previamente ordenado
+//para asi verificar si la categoria cambia en el arreglo imprime la categoria siguiente
+void Imprimir_Categoria(Cancion *array,int tam){
+
+int i,x=1;
+
+	printf("\n *******************************************************************\n");
+	printf("\t \t  Categoria %i \n",array[0].id_categoria);
+	printf(" \t %i.- << nombre de la cancion : %s >> \n \t\t<< Nombre del Artista :%s >> \n\n",x,array[0].nombre_cancion,array[0].artista);
+  x++;
+	for(i=1;i<tam;i++)
+	{
+		if(array[i-1].id_categoria!=array[i].id_categoria)
+    {
+      printf(" \t \t  Categoria %i \n\n",array[i].id_categoria);
+      x=1;
+    }
+			
+		printf(" \t %i.- << nombre de la cancion :%s >> \n \t\t<< Nombre del Artista : %s >> \n\n",x,array[i].nombre_cancion,array[i].artista);
+
+     x++;
+   
+	}
+	printf("\n *******************************************************************\n");
+	return;
+}
+
+
+
+void merge(int left, int centro, int right, Cancion *a){
+  Cancion temp[N];
+  int x,y,i;
+  x=i=left; //x representa el indice temporal del lado izquierdo
+  y = centro + 1;// y representa el indice temporal del lado derecho
+  
+  //aqui alguno de los dos lados se va a quedar vacío
+  while(x<=centro && y<= right){
+    if(a[x].id_categoria <= a[y].id_categoria)
+      temp[i++] = a[x++];
+    else
+      temp[i++] = a[y++];
+  }
+  
+  //luego, vaciar el lado que se haya quedado con elementos
+  while(x<=centro)
+    temp[i++] = a[x++];
+  
+  while(y<=right)
+    temp[i++] = a[y++];
+    
+  //copiar el merge al arreglo original desde los índices mandados
+  for(i = left; i<= right; i++)
+    a[i] = temp[i]; //en el temp se almacenó el merge en las mismas posiciones del arreglo original
+}
+  
+void mergeSort(int left, int right, Cancion *a){
+  if(left<right){
+    int centro = (left + right)/2;
+    mergeSort(left, centro, a);
+    mergeSort(centro+1, right, a);
+    merge(left, centro, right, a);
+  }
+}
+
+//para listar el top 5 utilizamos quicksort para ordenar el arreglo
+// y despues solo imprimir los 5 primeros lugares.
+void top5(Cancion *a,int tam){
+  int i,j=1,fin=tam-5;
+  printf(" \n \t\tLista de las 5 canciones mas escuchadas \n \n");
+if(fin<=0)
+  fin=0;
+  
+  
+  for(i=tam-1;i>=fin;i--)
+    {
+      printf("\t %i << %s >>\n     \t<< %s >> \n \t<< Numero de veces reproducida :%i >>\n\n",j,a[i].nombre_cancion,a[i].artista,a[i].num_reproducciones);
+      j++;
+    }
+}
+
+// Función para imprimir la lista de canciones de 10 en 10
+void Imprimir_canciones(int pagina,int paginas, Cancion *arreglodin, int tamano) {
+  int inicio_Indice = (pagina - 1) * 10;
+  int final_Indice = inicio_Indice + 10;
+  if(final_Indice>=tamano)
+  	final_Indice=tamano;
+
+int i;
+
+printf (" ************************************************************************\n");
+  
+  for ( i = inicio_Indice; i < final_Indice; i++) {
+
+    printf("\t %i << Nombre de la cancion :%s >>\n     \t<< nombre del artista :%s >> \n\n",i+1,arreglodin[i].nombre_cancion,arreglodin[i].artista);
+   
+  }
+   printf("\n \t \tPágina %d / %d:\n", pagina,paginas);
+   printf (" ************************************************************************\n");
+  
+
+  printf("\n");
+}
+
+//metodo que verifica coincidencia en 2 cadenas 
+int existMatch(char cad[], char c[]){
+  int i, j = 0, n_c = strlen(c), n_cad = strlen(cad);  
+  for(i = 0; i<=(n_cad - n_c) && j<n_c; i++)
+  for(j = 0; j<n_c && cad[i+j]==c[j]; j++);
+  return (j==n_c) ? 1 : 0; 
+}
+
+//Función para buscar una cancion a partir de una frase (Editar)
+void buscar_Frase(Cancion *arreglodin, int tam) {
+  char frase[100];
+  printf("Ingresa una frase \n");
+  scanf(" %[^\n]", frase);fflush(stdin);
+  int i,j=0;
+    printf("Las canciones que coinciden con %s son : \n", frase);
+    printf("********************************************");
+  for(i=0;i<tam;i++){
+    if(existMatch(arreglodin[i].nombre_cancion,frase)){
+      printf("\n \t  %s\n", arreglodin[i].nombre_cancion);
+      j=1;
+    }
+    
+      
+  }
+  if(j==0)
+      printf("\n No Existen coincidencias \n");
+    printf("******************************************** \n");
+  }
+
