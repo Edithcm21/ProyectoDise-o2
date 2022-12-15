@@ -25,6 +25,7 @@ void mergeSort(int left, int right, Cancion *a);
 void merge(int left, int centro, int right, Cancion *a);
 void top5(Cancion *a,int tam);
 void buscar_Frase(Cancion *arreglodin, int tam);
+int getSubSet(Cancion arregloC[], int tamA, int *aux, int k, int segundos);
 
 
 // Variable para llevar el control de la canción actual
@@ -50,7 +51,7 @@ int main(void) {
   float num_canciones;
 
 
-  Cancion *arreglodin,*arregloCategorias,*arregloMasescuchadas,*arreglobusqueda;
+  Cancion *arreglodin,*arregloCategorias,*arregloMasescuchadas,*arreglobusqueda,* arreglorecorrido;
   Cancion cancion;
   /*
   ingresarcanciones(cancion);
@@ -236,7 +237,27 @@ if(num_canciones<=0)
           //orden_puntuacion();
           break;
         case 5:
-          // lista de canciones que se pueden escuchar en un tiempo t
+
+          arreglorecorrido=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+			    if(!arreglorecorrido)				
+			  {
+				printf("No se pudo alojar la memoria \n");
+				return 0;	
+			  }
+          int *c = (int *) malloc(sizeof(int)*num_canciones);
+
+          //Hace el llenado del arreglo
+			llenararray(cancion,num_canciones,arreglorecorrido);
+          printf("Ingresa el tiempo en segundos \n");
+          int t;
+          scanf("%i",&t);
+          
+          if(getSubSet(arreglorecorrido, num_canciones,c,0,t))
+            printf("Si hubo coincidencia");
+          else
+            printf("No hubo coincidencia");
+            
+          
 
           break;
         default:
@@ -255,7 +276,7 @@ if(num_canciones<=0)
             arreglobusqueda=(Cancion*)malloc(num_canciones*sizeof(Cancion));
 		        if(!arreglobusqueda)				
 			      {
-				      printf("No se pudo alojar la memoria \n");
+				      printf("No se pudo alojar la memoria    \n");
 				      return 0;	
 			      }
       llenararray(cancion, num_canciones, arreglobusqueda);
@@ -524,4 +545,25 @@ void buscar_Frase(Cancion *arreglodin, int tam) {
       printf("\n No Existen coincidencias \n");
     printf("******************************************** \n");
   }
+
+
+//Algoritmo de la mochila
+int getSubSet(Cancion arregloC[], int tamA, int *aux, int k, int segundos){
+  
+  if(segundos==0)
+    return 1;
+  if(k >= tamA)
+    return 0;
+    
+  for(int i = k; i < tamA; i++){
+    if(arregloC[i].duracion<=segundos){
+        aux[i] = 1;
+        if(getSubSet(arregloC, tamA, aux, i+1, segundos - arregloC[i].duracion))
+          return 1;
+        aux[i] = 0;
+    }
+  }
+  
+  return 0;
+}
 
