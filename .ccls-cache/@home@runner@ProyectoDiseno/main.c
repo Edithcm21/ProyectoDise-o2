@@ -31,7 +31,7 @@ void imprimirListaT(Cancion arreglo[],int tam,int *aux);
 void printArray(Cancion array[], int size);
 void countingSort1(Cancion array[], int size);
 void modificarCancion(Cancion cancion);
-void Listarpaginas(int num_canciones);
+void Listarpaginas(int num_canciones,int numeropaginas);
 void ListarCategorias(int num_canciones);
 void ListarTop5(int num_canciones);
 void ListarO15(int num_canciones);
@@ -94,12 +94,62 @@ if(num_canciones<=0)
 
         switch (opcion2) {
         case 1:
-          {
+          Listarpaginas(num_canciones,numeropaginas);
+          opcion2=6;
+          break;
+                  
+        case 2:
+          ListarCategorias(num_canciones);
+          opcion2=6;
+          break;
+        case 3:
+          ListarTop5(num_canciones);
+          opcion2=6;
+          break; 
+        case 4:
+          ListarO15(num_canciones);
+          opcion2=6;
+          break;
+        case 5:
+          ListarListaT(num_canciones); 
+          opcion2=6;
+          break;
+          
+        default:
+            opcion2 = 6;
+          
+        }
+
+      } while (opcion2 != 6);
+      break;
+    }
+
+    case 2:
+      //Realizar busqueda a partir de una frase
+      ListarBusquedaFrase(num_canciones);
+      break;
+    case 3:
+      printf("\n Saliendo...\n\n");
+      break;
+    default:
+      opcion1 = 3;
+    }
+  } while (opcion1 != 3);
+
+  return 0;
+}
+
+
+
+void Listarpaginas(int num_canciones,int numeropaginas){
+  Cancion cancion;
+  int pagina=1,opc;
+  
            Cancion *arreglocanciones=(Cancion*)malloc(num_canciones*sizeof(Cancion));
 		        if(!arreglocanciones)				
 			      {
 				      printf("No se pudo alojar la memoria \n");
-				      return 0;	
+				      return ;	
 			      }
 
 			    llenararray(cancion,num_canciones,arreglocanciones);
@@ -140,25 +190,25 @@ if(num_canciones<=0)
 
           if(opc!=1 && opc!=2){
           	printf("Volviendo a el menu principal...");
-          	opcion2=6;
-            break;
+            return;
             }
           	
 
         	}while(opc==2 || opc ==1);  
           free(arreglocanciones);
-            }
-          break;
-          
-        
-        case 2:
-          {
+}
+
+
+void ListarCategorias(int num_canciones){
+  Cancion cancion;
+  int salir;
+  
           //impresion por categorias 
         	Cancion *arregloCategorias=(Cancion*)malloc(num_canciones*sizeof(Cancion));
 			    if(!arregloCategorias)				
 			      {
 				      printf("No se pudo alojar la memoria \n");
-				      return 0;	
+				      return;	
 			      }
 			    llenararray(cancion,num_canciones,arregloCategorias);
           // Agrupamos las canciones por categoría
@@ -166,19 +216,21 @@ if(num_canciones<=0)
           mergeSort(0, num_canciones-1, arregloCategorias,num_canciones+10);
         	Imprimir_Categoria(arregloCategorias,num_canciones);
         	printf(" \n \n  seleccione ""1"" para ir al menu principal ");
-        	scanf("%i",&opcion2);
-        	opcion2=6;
+        	scanf("%i",&salir);
+        	return;
         	free(arregloCategorias);
-          break;
 
-            }
-        case 3:
-          {
-          Cancion *arregloMasescuchadas=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+}
+
+void ListarTop5(int num_canciones)
+{
+  Cancion cancion;
+  int op;
+  Cancion *arregloMasescuchadas=(Cancion*)malloc(num_canciones*sizeof(Cancion));
 			    if(!arregloMasescuchadas)				
 			  {
 				printf("No se pudo alojar la memoria \n");
-				return 0;	
+				return ;	
 			  }
           //Hace el llenado del arreglo
 			llenararray(cancion,num_canciones,arregloMasescuchadas);
@@ -187,39 +239,42 @@ if(num_canciones<=0)
       // metodo `para listar las 5 canciones mas reproducidas
       top5(arregloMasescuchadas,num_canciones);
         	printf(" \n \n  seleccione ""1"" para ir al menu principal ");
-        	scanf("%i",&opcion2);
-          opcion2=6;
+        	scanf("%i",&op);
+       
           free(arregloMasescuchadas);
           
-          break;
-            }
-        case 4:
-          {
-           printf("entramos al case");
-          // obtenemos las canciones ordenadas por puntiacion de mayor a menor
+}
+
+void ListarO15(int num_canciones)
+{
+  Cancion cancion;
+  int op;
+          
           Cancion *arreglopuntuacion=(Cancion*)malloc(num_canciones*sizeof(Cancion));
 			    if(!arreglopuntuacion)				
 			  {
 				printf("No se pudo alojar la memoria \n");
-				return 0;	
+				return ;	
 			  }
          
           llenararray(cancion, num_canciones, arreglopuntuacion);
+  // obtenemos las canciones ordenadas por puntiacion
           countingSort1(arreglopuntuacion,num_canciones);
           printArray(arreglopuntuacion,num_canciones);
+          printf(" \n \n  seleccione ""1"" para ir al menu principal ");
+        	scanf("%i",&op);
           free(arreglopuntuacion);
-         
-          
-          break;
-            }
-        case 5:
-          {
+}
 
-          Cancion *arreglorecorrido=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+void ListarListaT(int num_canciones)
+{
+  int op;
+  Cancion cancion;
+  Cancion *arreglorecorrido=(Cancion*)malloc(num_canciones*sizeof(Cancion));
 			    if(!arreglorecorrido)				
 			  {
 				printf("No se pudo alojar la memoria \n");
-				return 0;	
+				return ;	
 			  }
           int *c = (int *) malloc(sizeof(int)*num_canciones);
 
@@ -239,45 +294,28 @@ if(num_canciones<=0)
             printf("No hubo coincidencia");
           free(arreglorecorrido);   
           free(c);
-          break;
-            }
-          
-        default:
-            opcion2 = 6;
-          
-        }
-
-      } while (opcion2 != 6);
-      break;
-    }
-
-    case 2:
-      //Realizar busqueda a partir de una frase
-      {
-            Cancion *arreglobusqueda=(Cancion*)malloc(num_canciones*sizeof(Cancion));
-		        if(!arreglobusqueda)				
-			      {
-				      printf("No se pudo alojar la memoria    \n");
-				      return 0;	
-			      }
-      llenararray(cancion, num_canciones, arreglobusqueda);
-      buscar_Frase(arreglobusqueda, num_canciones);
-        	printf(" \n \n  seleccione ""1"" para ir al menu principal ");
-        	scanf("%i",&opcion1); 
-      free(arreglobusqueda);
-      break;
-        }
-
-    case 3:
-      printf("\n Saliendo...\n\n");
-      break;
-    default:
-      opcion1 = 3;
-    }
-  } while (opcion1 != 3);
-
-  return 0;
+          printf(" \n \n  seleccione ""1"" para ir al menu principal ");
+        	scanf("%i",&op);
 }
+void ListarBusquedaFrase(int num_canciones){
+  Cancion cancion;
+  int op;
+  
+  Cancion *arreglobusqueda=(Cancion*)malloc(num_canciones*sizeof(Cancion));
+  if(!arreglobusqueda)				
+		{
+		 printf("No se pudo alojar la memoria    \n");
+		 return ;	
+		}
+  llenararray(cancion, num_canciones, arreglobusqueda);
+  buscar_Frase(arreglobusqueda, num_canciones);
+  free(arreglobusqueda);
+  printf(" \n \n  seleccione ""1"" para ir al menu principal ");
+  scanf("%i",&op);
+}
+
+
+//Metodos para llenar el archivo*******************
 
 void ingresarcanciones(Cancion cancion)
 {
@@ -438,7 +476,7 @@ int i,x=1;
 
 	printf("\n *******************************************************************\n");
 	printf("\t \t  Categoria %i \n",array[0].id_categoria);
-	printf(" \t %i.- << nombre de la cancion : %s >> \n \t\t<< Nombre del Artista :%s >> \n\n",x,array[0].nombre_cancion,array[0].artista);
+	printf(" \t %i.- << nombre de la cancion : %s >> \n \t\t<< Nombre del Artista :%s  >> \n\n",x,array[0].nombre_cancion,array[0].artista);
   x++;
 	for(i=1;i<tam;i++)
 	{
@@ -527,7 +565,7 @@ void countingSort1(Cancion array[], int size) {
   // we cannot declare it as int count(max+1) in C as
   // it does not support dynamic memory allocation.
   // So, its size is provided statically.
-  int count[7];
+  int count[6];
 
   // Initialize count array with all zeros.
   for (int i = 0; i <= max; ++i) {
@@ -602,7 +640,7 @@ void imprimirListaT(Cancion arreglo[],int tam,int *aux){
   	printf("\n *******************************************************************\n");
   for(int i=0;i<tam;i++){
     if(aux[i]==1){
-      printf("\t << %s >>\n \t<< %s >> \n\n",arreglo[i].nombre_cancion,arreglo[i].artista);
+      printf("\t << %s >>\n \t<< %s >> \n <<tiempo en segundos %i\n\n",arreglo[i].nombre_cancion,arreglo[i].artista,arreglo[i].duracion);
     }
   }
   	printf("\n *******************************************************************\n");
@@ -666,11 +704,12 @@ void modificarCancion(Cancion cancion)
 			if (codigo==cancion.Puntuacion)
 			{
 				e=1;
-				cancion.Puntuacion=4;
+				cancion.Puntuacion=3;
 				int posicion=ftell(file8)-sizeof(Cancion);
 				fseek(file8,posicion,SEEK_SET);
 				fwrite(&cancion,sizeof(Cancion),1,file8);
         printf("Cambio el puntaje");
+        
 				
         
 			}
